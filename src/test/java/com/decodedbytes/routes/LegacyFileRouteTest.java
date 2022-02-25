@@ -25,11 +25,25 @@ public class LegacyFileRouteTest {
     @Autowired
     ProducerTemplate producerTemplate;
 
+    @Test
+    public void testFileMove() throws Exception {
+
+        String expectedBody = "OutboundNameAddress(name=Mark, address=123 Ajax, ON J6G 7T6)";
+        mockEndpoint.expectedBodiesReceived(expectedBody);
+        mockEndpoint.expectedMinimumMessageCount(1);
+
+        AdviceWith.adviceWith(context, "legacyFileRouteId", routeBuilder -> {
+            routeBuilder.weaveByToUri("file:*").replace().to(mockEndpoint);
+        });
+
+        context.start();
+        mockEndpoint.assertIsSatisfied();
+    }
 
     @Test
     public void testByMockingFromEndpoint() throws Exception {
 
-        String expectedBody = "This is the new input file";
+        String expectedBody = "OutboundNameAddress(name=Sam, address=12 Ajax, Ontario L1S 2TR)";
         mockEndpoint.expectedBodiesReceived(expectedBody);
         mockEndpoint.expectedMinimumMessageCount(1);
 
@@ -39,7 +53,8 @@ public class LegacyFileRouteTest {
         });
 
         context.start();
-        producerTemplate.sendBody("direct:mockStart", "This is the new input file");
+        producerTemplate.sendBody("direct:mockStart", "name, house_number, city, province, postal_code\n" +
+                "Sam,12,Ajax,Ontario,L1S 2TR");
         mockEndpoint.assertIsSatisfied();
 
 
