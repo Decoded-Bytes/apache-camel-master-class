@@ -1,12 +1,14 @@
 package com.decodedbytes.routes;
 
 import com.decodedbytes.beans.InboundNameAddress;
-import com.decodedbytes.processor.NameAddressProcessor;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.rest.RestBindingMode;
 import org.springframework.stereotype.Component;
+
+import javax.jms.JMSException;
+import java.net.ConnectException;
 
 @Component
 public class NewRestRoute extends RouteBuilder {
@@ -14,6 +16,10 @@ public class NewRestRoute extends RouteBuilder {
     public void configure() throws Exception {
 
         restConfiguration().component("jetty").host("0.0.0.0").port(8080).bindingMode(RestBindingMode.json).enableCORS(true);
+
+        onException(JMSException.class, ConnectException.class)
+                .handled(true)
+                .log(LoggingLevel.INFO, "JMS connection could not be established");
 
         rest("masterclass")
                 .produces("application/json")
