@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0">
+
+    <persistence-unit name="camel" transaction-type="RESOURCE_LOCAL">
+        <class>com.decodedbytes.beans.InboundNameAddress</class>
+
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/camel_masterclass?createDatabaseIfNotExist=true" />
+            <property name="javax.persistence.jdbc.user" value="root" />
+            <property name="javax.persistence.jdbc.password" value="password" />
+        </properties>
+
+    </persistence-unit>
+</persistence>

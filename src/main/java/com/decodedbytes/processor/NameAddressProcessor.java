@@ -10,6 +10,7 @@ public class NameAddressProcessor implements Processor {
     public void process(Exchange exchange) throws Exception {
         InboundNameAddress inboundNameAddress = exchange.getIn().getBody(InboundNameAddress.class);
         exchange.getIn().setBody(new OutboundNameAddress(inboundNameAddress.getName(),returnFormattedAddress(inboundNameAddress)));
+        exchange.getIn().setHeader("consumedId",inboundNameAddress.getId());
     }
 
     private String returnFormattedAddress(InboundNameAddress nameAddress) {
