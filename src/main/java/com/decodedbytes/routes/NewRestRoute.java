@@ -2,6 +2,7 @@ package com.decodedbytes.routes;
 
 import com.decodedbytes.beans.InboundNameAddress;
 import com.decodedbytes.processor.NameAddressProcessor;
+import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.rest.RestBindingMode;
@@ -18,10 +19,22 @@ public class NewRestRoute extends RouteBuilder {
                 .produces("application/json")
                 .post("nameAddress").type(InboundNameAddress.class).route().routeId("newRestRouteId")
                 .log(LoggingLevel.INFO, String.valueOf(simple("${body}")))
-                // .process(new NameAddressProcessor())
-                // .convertBodyTo(String.class)
-                //.to("file:src/data/output?fileName=outputFile.csv&fileExist=append&appendChars=\\n");
+                .to("direct:persistMessage")
+                .wireTap("seda:sendToQueue")
+
+                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(200))
+                .transform().simple("Message Processed: ${body}")
+                .endRest();
+
+
+
+        from("direct:persistMessage")
+                .routeId("persistMessageRouteId")
                 .to("jpa:"+InboundNameAddress.class.getName());
+
+        from("seda:sendToQueue")
+                .routeId("sendToQueueRouteId")
+                .to("activemq:queue:nameaddressqueue");
 
     }
 }
