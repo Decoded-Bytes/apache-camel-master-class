@@ -9,7 +9,7 @@ public class LegacyFileRoute extends RouteBuilder {
     public void configure() throws Exception {
 
         from("file:src/data/input?fileName=inputFile.txt")
-                .routeId("inputFileId")
+                .routeId("legacyFileRouteId")
                 .to("file:src/data/output?fileName=outputFile.txt");
     }
 }
