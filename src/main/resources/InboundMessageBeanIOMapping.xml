@@ -1,0 +1,14 @@
+<beanio xmlns="http://www.beanio.org/2012/03"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.beanio.org/2012/03 http://www.beanio.org/2012/03/mapping.xsd">
+
+    <stream name="inboundMessageStream" format="csv">
+        <record name="inboundNameAddress" class="com.decodedbytes.beans.InboundNameAddress">
+            <field name="name" minOccurs="1" />
+            <field name="houseNumber" minOccurs="1" />
+            <field name="city" minOccurs="1" />
+            <field name="province" minOccurs="1" />
+            <field name="postalCode" minOccurs="1" />
+        </record>
+    </stream>
+</beanio>
