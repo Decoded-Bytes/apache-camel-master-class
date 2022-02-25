@@ -25,20 +25,6 @@ public class LegacyFileRouteTest {
     @Autowired
     ProducerTemplate producerTemplate;
 
-    @Test
-    public void testFileMove() throws Exception {
-
-        String expectedBody = "THIS IS A TEST FILE";
-        mockEndpoint.expectedBodiesReceived(expectedBody);
-        mockEndpoint.expectedMinimumMessageCount(1);
-
-        AdviceWith.adviceWith(context, "legacyFileRouteId", routeBuilder -> {
-            routeBuilder.weaveByToUri("file:*").replace().to(mockEndpoint);
-        });
-
-        context.start();
-        mockEndpoint.assertIsSatisfied();
-    }
 
     @Test
     public void testByMockingFromEndpoint() throws Exception {
