@@ -1,6 +1,7 @@
 package com.decodedbytes.routes;
 
 import com.decodedbytes.beans.InboundNameAddress;
+import com.decodedbytes.processor.NameAddressProcessor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.dataformat.beanio.BeanIODataFormat;
 import org.slf4j.Logger;
@@ -22,11 +23,8 @@ public class LegacyFileRoute extends RouteBuilder {
                 .split(body().tokenize("\n",1,true))
                 .streaming()
                 .unmarshal(inboundDataFormat)
-                .process(exchange -> {
-                    InboundNameAddress inboundNameAddress = exchange.getIn().getBody(InboundNameAddress.class);
-                    logger.info(inboundNameAddress.toString());
-                    exchange.getIn().setBody(inboundNameAddress.toString());
-                })
+                .process(new NameAddressProcessor())
+                .convertBodyTo(String.class)
                 .to("file:src/data/output?fileName=outputFile.csv&fileExist=append&appendChars=\\n")
                 .end();
     }
